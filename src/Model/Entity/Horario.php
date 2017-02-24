@@ -4,17 +4,17 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Trabajador Entity
+ * Horario Entity
  *
- * @property string $dni
- * @property string $nombres
- * @property string $apellidoPaterno
- * @property string $apellidoMaterno
+ * @property int $id
+ * @property string $descripcion
+ * @property \Cake\I18n\Time $horaInicio
+ * @property \Cake\I18n\Time $horaFin
  * @property int $estado_id
- * 
+ *
  * @property \App\Model\Entity\Estado $estado
  */
-class Trabajador extends Entity
+class Horario extends Entity
 {
 
     /**
@@ -27,14 +27,17 @@ class Trabajador extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true
+        '*' => true,
+        'id' => false
     ];
     
-    protected $_virtual = ['full_name'];
+    protected $_virtual = ['horaInicio', 'horaFin'];
     
-    protected function _getFullName() {
-        return $this->_properties['apellidoPaterno'] . ' ' . $this->_properties['apellidoMaterno'] . ', ' .
-            $this->_properties['nombres'];
+    protected function _getHoraInicio() {
+        return $this->_properties['horaInicio']->i18nFormat('HH:mm:ss');
     }
     
+    protected function _getHoraFin() {
+        return $this->_properties['horaFin']->i18nFormat('HH:mm:ss');
+    }
 }

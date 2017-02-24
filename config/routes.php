@@ -77,6 +77,7 @@ Router::scope('/', function (RouteBuilder $routes) {
 Router::scope('/', function ($routes) {
     $routes->extensions(['json']);
     $routes->resources('Trabajadores');
+    $routes->resources('horarios');
 });
 
 /**

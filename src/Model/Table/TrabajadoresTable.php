@@ -35,8 +35,18 @@ class TrabajadoresTable extends Table
         $this->setEntityClass('Trabajador');
         $this->setDisplayField('apellidoPaterno');
         $this->setPrimaryKey('dni');
+        
+        $this->belongsTo('Estados', [
+            'foreignKey' => 'estado_id',
+            'joinType' => 'INNER'
+        ]);
+        
+        $this->hasOne('Horarios_Trabajadores')
+            ->setName('Horarios_Trabajadores')
+            ->setProperty('horarios_trabajador')
+            ->setConditions(['Horarios_Trabajadores.estado_id' => 1])
+            ->setForeignKey('trabajador_dni');
     }
-
     /**
      * Default validation rules.
      *

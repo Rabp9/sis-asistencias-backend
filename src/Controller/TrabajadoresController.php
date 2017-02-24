@@ -19,7 +19,9 @@ class TrabajadoresController extends AppController
     public function index() {
         $this->viewBuilder()->layout(false);
         
-        $trabajadores = $this->Trabajadores->find();
+        $trabajadores = $this->Trabajadores->find()
+            ->where(['Trabajadores.estado_id' => 1])
+            ->contain(['Horarios_Trabajadores' => ['Horarios']]);
         
         $this->set(compact('trabajadores'));
         $this->set('_serialize', ['trabajadores']);
@@ -47,6 +49,7 @@ class TrabajadoresController extends AppController
     public function add() {
         $this->viewBuilder()->layout(false);
         $trabajador = $this->Trabajadores->newEntity();
+        $trabajador->estado_id = 1;
         if ($this->request->is('post')) {
             $trabajador = $this->Trabajadores->patchEntity($trabajador, $this->request->getData());
             if ($this->Trabajadores->save($trabajador)) {
