@@ -24,7 +24,6 @@ class Trabajador extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
-        'dni' => false
+        '*' => true
     ];
 }

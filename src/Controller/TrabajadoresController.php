@@ -32,14 +32,11 @@ class TrabajadoresController extends AppController
      * @return \Cake\Network\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
-    {
-        $trabajadore = $this->Trabajadores->get($id, [
-            'contain' => []
-        ]);
+    public function view($id = null) {
+        $trabajador = $this->Trabajadores->get($id);
 
-        $this->set('trabajadore', $trabajadore);
-        $this->set('_serialize', ['trabajadore']);
+        $this->set(compact('trabajador'));
+        $this->set('_serialize', ['trabajador']);
     }
 
     /**
@@ -47,20 +44,25 @@ class TrabajadoresController extends AppController
      *
      * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add()
-    {
-        $trabajadore = $this->Trabajadores->newEntity();
+    public function add() {
+        $this->viewBuilder()->layout(false);
+        $trabajador = $this->Trabajadores->newEntity();
         if ($this->request->is('post')) {
-            $trabajadore = $this->Trabajadores->patchEntity($trabajadore, $this->request->getData());
-            if ($this->Trabajadores->save($trabajadore)) {
-                $this->Flash->success(__('The trabajadore has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+            $trabajador = $this->Trabajadores->patchEntity($trabajador, $this->request->getData());
+            if ($this->Trabajadores->save($trabajador)) {
+                $message = [
+                    'type' => 'success',
+                    'text' => __('Se registro correctamente al trabajador'),
+                ];
+            } else {
+                $message = [
+                    'type' => 'error',
+                    'text' => __('No fue posible registrar al trabajador'),
+                ];
             }
-            $this->Flash->error(__('The trabajadore could not be saved. Please, try again.'));
         }
-        $this->set(compact('trabajadore'));
-        $this->set('_serialize', ['trabajadore']);
+        $this->set(compact('trabajador', 'message'));
+        $this->set('_serialize', ['trabajador', 'message']);
     }
 
     /**
