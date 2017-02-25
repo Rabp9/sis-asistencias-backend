@@ -2,6 +2,7 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\I18n\Time;
 
 /**
  * Horario Entity
@@ -27,17 +28,26 @@ class Horario extends Entity
      * @var array
      */
     protected $_accessible = [
-        '*' => true,
-        'id' => false
+        '*' => true
     ];
     
-    protected $_virtual = ['horaInicio', 'horaFin'];
+    protected $_virtual = ['horaInicio', 'horaFin', 'detalleHorario'];
     
     protected function _getHoraInicio() {
+        if (!isset($this->_properties['horaInicio'])) {
+            return '';
+        }
         return $this->_properties['horaInicio']->i18nFormat('HH:mm:ss');
     }
     
     protected function _getHoraFin() {
+        if (!isset($this->_properties['horaFin'])) {
+            return '';
+        }
         return $this->_properties['horaFin']->i18nFormat('HH:mm:ss');
+    }
+    
+    protected function _getDetalleHorario() {
+        return $this->_properties['horaInicio']->i18nFormat('HH:mm:ss') . ' - ' . $this->_properties['horaFin']->i18nFormat('HH:mm:ss');
     }
 }
