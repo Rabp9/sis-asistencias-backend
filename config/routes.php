@@ -78,6 +78,18 @@ Router::scope('/', function ($routes) {
     $routes->extensions(['json']);
     $routes->resources('Trabajadores');
     $routes->resources('horarios');
+    $routes->resources('horariosTrabajadores');
+    $routes->resources('condiciones');
+    $routes->resources('users');
+    $routes->resources('checkinout');
+    $routes->resources('registros', [
+        'map' => [
+            'getByTrabajadorAndFechas/:trabajador_dni/:fechaInicio/:fechaFin' => [
+                'action' => 'getByTrabajadorAndFechas',
+                'method' => 'GET'
+            ]
+        ]
+    ]);
 });
 
 /**

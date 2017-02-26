@@ -49,22 +49,29 @@ class HorariosTrabajadoresController extends AppController
      *
      * @return \Cake\Network\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add()
-    {
-        $horariosTrabajadore = $this->HorariosTrabajadores->newEntity();
+    public function add() {
+        $this->viewBuilder()->layout(false);
+        $horariosTrabajador = $this->HorariosTrabajadores->newEntity();
+        $horariosTrabajador->estado_id = 1;
         if ($this->request->is('post')) {
-            $horariosTrabajadore = $this->HorariosTrabajadores->patchEntity($horariosTrabajadore, $this->request->getData());
-            if ($this->HorariosTrabajadores->save($horariosTrabajadore)) {
-                $this->Flash->success(__('The horarios trabajadore has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+            $horariosTrabajador = $this->HorariosTrabajadores->patchEntity($horariosTrabajador, $this->request->getData());
+            if ($this->HorariosTrabajadores->save($horariosTrabajador)) {
+                $horariosTrabajador = $this->HorariosTrabajadores->get($horariosTrabajador->id, [
+                    'contain' => ['Horarios']
+                ]);
+                $message = [
+                    'type' => 'success',
+                    'text' => __('Se asignado correctamente el horario'),
+                ];
+            } else {
+                $message = [
+                    'type' => 'error',
+                    'text' => __('No fue posible asignar el horario'),
+                ];
             }
-            $this->Flash->error(__('The horarios trabajadore could not be saved. Please, try again.'));
         }
-        $horarios = $this->HorariosTrabajadores->Horarios->find('list', ['limit' => 200]);
-        $estados = $this->HorariosTrabajadores->Estados->find('list', ['limit' => 200]);
-        $this->set(compact('horariosTrabajadore', 'horarios', 'estados'));
-        $this->set('_serialize', ['horariosTrabajadore']);
+        $this->set(compact('horariosTrabajador', 'message'));
+        $this->set('_serialize', ['horariosTrabajador', 'message']);
     }
 
     /**

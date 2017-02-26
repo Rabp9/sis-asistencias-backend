@@ -1,6 +1,7 @@
 <?php
 namespace App\Model\Table;
 
+use App\Model\Entity\HorariosTrabajador;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -34,6 +35,7 @@ class HorariosTrabajadoresTable extends Table
         parent::initialize($config);
 
         $this->setTable('RRHH.horarios_trabajadores');
+        $this->setEntityClass('HorariosTrabajador');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
@@ -74,18 +76,14 @@ class HorariosTrabajadoresTable extends Table
         return $validator;
     }
 
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->existsIn(['horario_id'], 'Horarios'));
-        $rules->add($rules->existsIn(['estado_id'], 'Estados'));
-
-        return $rules;
+    public function beforeSave($event, $entity, $options) {
+        $today = date('Y-m-d');
+        $entity->fechaInicio = $today;
+        return $this->updateAll([
+            'Horarios_trabajadores.estado_id' => 2,
+            'Horarios_trabajadores.fechaFin' => $today
+        ], [
+            'Horarios_trabajadores.trabajador_dni' => $entity->trabajador_dni
+        ]);
     }
 }

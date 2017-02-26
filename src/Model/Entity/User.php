@@ -4,19 +4,15 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * HorariosTrabajadore Entity
+ * User Entity
  *
  * @property int $id
- * @property int $horario_id
- * @property string $trabajador_dni
- * @property int $estado_id
- * @property \Cake\I18n\Time $fechaInicio
- * @property \Cake\I18n\Time $fechaFin
+ * @property string $dni
+ * @property string $nombre_completo
  *
- * @property \App\Model\Entity\Horario $horario
- * @property \App\Model\Entity\Estado $estado
+ * @property \App\Model\Entity\CHECKINOUT[] $c_h_e_c_k_i_n_o_u_t
  */
-class HorariosTrabajadores extends Entity
+class User extends Entity
 {
 
     /**

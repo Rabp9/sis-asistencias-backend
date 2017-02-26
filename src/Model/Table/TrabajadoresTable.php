@@ -43,7 +43,7 @@ class TrabajadoresTable extends Table
         
         $this->hasOne('Horarios_Trabajadores')
             ->setName('Horarios_Trabajadores')
-            ->setProperty('horarios_trabajador')
+            ->setProperty('horariosTrabajador')
             ->setConditions(['Horarios_Trabajadores.estado_id' => 1])
             ->setForeignKey('trabajador_dni');
     }

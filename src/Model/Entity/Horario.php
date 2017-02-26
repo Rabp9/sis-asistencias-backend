@@ -31,7 +31,7 @@ class Horario extends Entity
         '*' => true
     ];
     
-    protected $_virtual = ['horaInicio', 'horaFin', 'detalleHorario'];
+    protected $_virtual = ['horaInicio', 'horaFin', 'detalleHorario', 'descripcion_full'];
     
     protected function _getHoraInicio() {
         if (!isset($this->_properties['horaInicio'])) {
@@ -49,5 +49,9 @@ class Horario extends Entity
     
     protected function _getDetalleHorario() {
         return $this->_properties['horaInicio']->i18nFormat('HH:mm:ss') . ' - ' . $this->_properties['horaFin']->i18nFormat('HH:mm:ss');
+    }
+    
+    protected function _getDescripcionFull() {
+        return $this->_properties['descripcion'] . ' (' . $this->_getDetalleHorario() . ')';
     }
 }
