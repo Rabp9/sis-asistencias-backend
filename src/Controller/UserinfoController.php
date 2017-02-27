@@ -4,11 +4,11 @@ namespace App\Controller;
 use App\Controller\AppController;
 
 /**
- * Users Controller
+ * Userinfo Controller
  *
- * @property \App\Model\Table\UsersTable $Users
+ * @property \App\Model\Table\UserinfoTable $Userinfo
  */
-class UsersController extends AppController
+class UserinfoController extends AppController
 {
 
     /**
@@ -16,12 +16,13 @@ class UsersController extends AppController
      *
      * @return \Cake\Network\Response|null
      */
-    public function index()
-    {
-        $users = $this->paginate($this->Users);
-
-        $this->set(compact('users'));
-        $this->set('_serialize', ['users']);
+    public function index() {
+        $this->viewBuilder()->layout(false);
+        
+        $userinfos = $this->Userinfo->find();
+        
+        $this->set(compact('userinfos'));
+        $this->set('_serialize', ['userinfos']);
     }
 
     /**

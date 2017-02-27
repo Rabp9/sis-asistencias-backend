@@ -7,7 +7,7 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Users Model
+ * Userinfo Model
  *
  * @property \Cake\ORM\Association\HasMany $CHECKINOUT
  *
@@ -19,7 +19,7 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
  */
-class UsersTable extends Table
+class UserinfoTable extends Table
 {
 
     /**
@@ -32,36 +32,13 @@ class UsersTable extends Table
     {
         parent::initialize($config);
         
-        $this->setTable('dbo.USERS');
-        $this->setDisplayField('nombre_completo');
-        $this->setPrimaryKey('id');
+        $this->setTable('dbo.USERINFO');
+        $this->setDisplayField('Name');
+        $this->setPrimaryKey('USERID');
 
         $this->hasMany('CHECKINOUT', [
-            'foreignKey' => 'user_id'
+            'foreignKey' => 'USERID'
         ]);
-    }
-
-    /**
-     * Default validation rules.
-     *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
-
-        $validator
-            ->requirePresence('dni', 'create')
-            ->notEmpty('dni');
-
-        $validator
-            ->requirePresence('nombre_completo', 'create')
-            ->notEmpty('nombre_completo');
-
-        return $validator;
     }
 
     /**

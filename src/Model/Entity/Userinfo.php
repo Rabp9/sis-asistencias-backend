@@ -4,15 +4,15 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * User Entity
+ * Userinfo Entity
  *
- * @property int $id
- * @property string $dni
- * @property string $nombre_completo
+ * @property int $userid
+ * @property string $badgenumber
+ * @property string $name
  *
- * @property \App\Model\Entity\CHECKINOUT[] $c_h_e_c_k_i_n_o_u_t
+ * @property \App\Model\Entity\CHECKINOUT[] $checkinout
  */
-class User extends Entity
+class Userinfo extends Entity
 {
 
     /**

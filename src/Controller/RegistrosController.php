@@ -134,34 +134,36 @@ class RegistrosController extends AppController
         $fechaAux = new FrozenDate($fechaInicio);
         $fechaFin = new FrozenDate($fechaFin);
         $fechaFin = $fechaFin->modify('+ 1 day');
+        
         while ($fechaFin != $fechaAux) {
             $fechas[] = $fechaAux;
             $fechaAux = $fechaAux->modify('+ 1 day');
         }
+        
         // Eliminar sàbados y domingos
         $fechas = array_filter($fechas, function($fecha) {
             return !in_array($fecha->format('w'), [6, 0]);
         });
-        $usersTable = TableRegistry::get('Users');
+        $userinfoTable = TableRegistry::get('Userinfo');
         
+        $asistencia = $this->Registros->Condiciones->find()
+            ->where(['Condiciones.descripcion' => 'Asistencia'])
+            ->first();
+
+        $inasistencia = $this->Registros->Condiciones->find()
+            ->where(['Condiciones.descripcion' => 'Inasistencia Injustificada'])
+            ->first();
+
+        $tardanza = $this->Registros->Condiciones->find()
+            ->where(['Condiciones.descripcion' => 'Tardanza'])
+            ->first();
+
         foreach ($fechas as $fecha) {
             $registro = $this->Registros->find()
                 ->where([
                     'Registros.trabajador_dni' => $trabajador_dni,
                     'Registros.fecha' => $fecha->format('Y-m-d')
                 ])->first();
-            
-            $asistencia = $this->Registros->Condiciones->find()
-                ->where(['Condiciones.descripcion' => 'Asistencia'])
-                ->first();
-            
-            $inasistencia = $this->Registros->Condiciones->find()
-                ->where(['Condiciones.descripcion' => 'Inasistencia Injustificada'])
-                ->first();
-            
-            $tardanza = $this->Registros->Condiciones->find()
-                ->where(['Condiciones.descripcion' => 'Tardanza'])
-                ->first();
             
             if (!$registro) {
                 $registro = $this->Registros->newEntity();
@@ -177,28 +179,28 @@ class RegistrosController extends AppController
                 $registro->horario_hora_out = $trabajador->horariosTrabajador->horario->horaFin;
                 
                 // Get hora_in and hora_out
-                $user = $usersTable->find()
-                    ->where(['Users.dni' => $trabajador_dni])
+                $userinfo = $userinfoTable->find()
+                    ->where(['Userinfo.Badgenumber' => $trabajador_dni])
                     ->first();
                 
-                $chekIn = $usersTable->Checkinout->find()
+                $chekIn = $userinfoTable->Checkinout->find()
                     ->where([
-                        'Checkinout.user_id' => $user->id,
-                        'CAST(Checkinout.checktime AS DATE) =' => $fecha->format('Y-m-d'),
-                        'Checkinout.tipo' => 'I'
+                        'Checkinout.USERID' => $userinfo->USERID,
+                        'CAST(Checkinout.CHECKTIME AS DATE) =' => $fecha->format('Y-m-d'),
+                        'Checkinout.CHECKTYPE' => 'I'
                     ])
                     ->first();
                 
-                $chekOut = $usersTable->Checkinout->find()
+                $chekOut = $userinfoTable->Checkinout->find()
                     ->where([
-                        'Checkinout.user_id' => $user->id,
-                        'CAST(Checkinout.checktime AS DATE) =' => $fecha->format('Y-m-d'),
-                        'Checkinout.tipo' => 'O'
+                        'Checkinout.USERID' => $userinfo->USERID,
+                        'CAST(Checkinout.CHECKTIME AS DATE) =' => $fecha->format('Y-m-d'),
+                        'Checkinout.CHECKTYPE' => 'O'
                     ])
                     ->first();
                 
                 if ($chekIn) {
-                    $registro->hora_in = $chekIn->checktime->format('H:i:s');
+                    $registro->hora_in = $chekIn->CHECKTIME->format('H:i:s');
                     
                     if ($registro->hora_in <= $registro->horario_hora_in) {
                         $registro->condicion_id = $asistencia->id;
@@ -210,7 +212,7 @@ class RegistrosController extends AppController
                 }
                 
                 if ($chekOut) {
-                    $registro->hora_out = $chekOut->checktime->format('H:i:s');
+                    $registro->hora_out = $chekOut->CHECKTIME->format('H:i:s');
                 }
                 
                 $this->Registros->save($registro);
@@ -220,28 +222,28 @@ class RegistrosController extends AppController
                 $registros[] = $registro;
             } else {   
                 // Get hora_in and hora_out
-                $user = $usersTable->find()
-                    ->where(['Users.dni' => $trabajador_dni])
+                $userinfo = $userinfoTable->find()
+                    ->where(['Userinfo.Badgenumber' => $trabajador_dni])
                     ->first();
                 
-                $chekIn = $usersTable->Checkinout->find()
+                $chekIn = $userinfoTable->Checkinout->find()
                     ->where([
-                        'Checkinout.user_id' => $user->id,
-                        'CAST(Checkinout.checktime AS DATE) =' => $fecha->format('Y-m-d'),
-                        'Checkinout.tipo' => 'I'
+                        'Checkinout.USERID' => $userinfo->USERID,
+                        'CAST(Checkinout.CHECKTIME AS DATE) =' => $fecha->format('Y-m-d'),
+                        'Checkinout.CHECKTYPE' => 'I'
                     ])
                     ->first();
                 
-                $chekOut = $usersTable->Checkinout->find()
+                $chekOut = $userinfoTable->Checkinout->find()
                     ->where([
-                        'Checkinout.user_id' => $user->id,
-                        'CAST(Checkinout.checktime AS DATE) =' => $fecha->format('Y-m-d'),
-                        'Checkinout.tipo' => 'O'
+                        'Checkinout.USERID' => $userinfo->USERID,
+                        'CAST(Checkinout.CHECKTIME AS DATE) =' => $fecha->format('Y-m-d'),
+                        'Checkinout.CHECKTYPE' => 'O'
                     ])
                     ->first();
                 
                 if ($chekIn) {
-                    $registro->hora_in = $chekIn->checktime->format('H:i:s');
+                    $registro->hora_in = $chekIn->CHECKTIME->format('H:i:s');
                     
                     if ($registro->hora_in <= $registro->horario_hora_in) {
                         $registro->condicion_id = $asistencia->id;
@@ -253,7 +255,7 @@ class RegistrosController extends AppController
                 }
                 
                 if ($chekOut) {
-                    $registro->hora_out = $chekOut->checktime->format('H:i:s');
+                    $registro->hora_out = $chekOut->CHECKTIME->format('H:i:s');
                 }
                 
                 $this->Registros->save($registro);

@@ -93,8 +93,15 @@ class Registro extends Entity
     }
     
     protected function _getMinTarde() {
-        //        return $this->_properties['hora_in'] - $this->_properties['horario_hora_in'];
+        if ($this->_properties['horario_hora_in'] == null || $this->_properties['hora_in'] == null) {
+            return '';
+        }
+        $horario_hora_in = strtotime($this->_properties['horario_hora_in']->i18nFormat('HH:mm:ss'));
+        $hora_in = strtotime($this->_properties['hora_in']->i18nFormat('HH:mm:ss'));
+        if ($horario_hora_in < $hora_in) {
+            $min_tarde = date('H:i:s', strtotime('00:00:00') + $hora_in - $horario_hora_in);
+            return (date('H', strtotime($min_tarde)) * 60) + date('i', strtotime($min_tarde));
+        }
         return '';
     }
-    
 }
