@@ -33,6 +33,9 @@ class Trabajador extends Entity
     protected $_virtual = ['full_name'];
     
     protected function _getFullName() {
+        if (!isset($this->_properties['apellidoPaterno'])) {
+            return '';
+        }
         return $this->_properties['apellidoPaterno'] . ' ' . $this->_properties['apellidoMaterno'] . ', ' .
             $this->_properties['nombres'];
     }
